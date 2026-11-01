@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { Livro } from '../models/livro';
 
+// Armazenamento em memória através de array
 const livros: Livro[] = [];
 
+// Função de validação interna
 function validarDadosLivro(body: any): string | null {
   const { titulo, autor, editora, anoEdicao, genero, isbn } = body;
 
@@ -28,14 +30,17 @@ function validarDadosLivro(body: any): string | null {
   return null;
 }
 
+// Rota Principal GET
 export const statusApi = (_req: Request, res: Response) => {
   res.status(200).json({ mensagem: 'API Biblioteca funcionando!' });
 };
 
+// Consultar todos os livros
 export const listarLivros = (_req: Request, res: Response) => {
   res.status(200).json(livros);
 };
 
+// Consultar livro por ISBN
 export const obterLivroPorIsbn = (req: Request, res: Response) => {
   const { isbn } = req.params;
   const livroEncontrado = livros.find((l) => l.isbn === isbn);
@@ -48,6 +53,7 @@ export const obterLivroPorIsbn = (req: Request, res: Response) => {
   res.status(200).json(livroEncontrado);
 };
 
+// Cadastrar novo livro
 export const cadastrarLivro = (req: Request, res: Response) => {
   const erroValidacao = validarDadosLivro(req.body);
   if (erroValidacao) {
@@ -56,6 +62,8 @@ export const cadastrarLivro = (req: Request, res: Response) => {
   }
 
   const { titulo, autor, editora, anoEdicao, genero, isbn } = req.body;
+
+// ISBN existente
 
   const isbnExiste = livros.some((l) => l.isbn === isbn);
   if (isbnExiste) {
